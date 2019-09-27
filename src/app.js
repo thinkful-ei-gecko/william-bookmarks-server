@@ -25,7 +25,7 @@ app.use(express.json());
 
 app.use(validateBearerToken);
 
-app.use(bookmarksRouter);
+app.use('/bookmarks', bookmarksRouter);
 
 app.use(errorHandler);
 

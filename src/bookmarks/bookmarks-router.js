@@ -7,7 +7,7 @@ const uuid = require('uuid/v4');
 const bookmarksRouter = express.Router();
 
 bookmarksRouter
-  .route('/bookmarks')
+  .route('/')
   .get((req,res) => {
     res.status(200).json(bookmarks);
   })
@@ -60,7 +60,7 @@ bookmarksRouter
   });
 
 bookmarksRouter
-  .route('/bookmarks/:id')
+  .route('/:id')
   .get((req,res) => {
     const id = req.params.id;
   
