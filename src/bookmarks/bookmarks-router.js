@@ -14,7 +14,8 @@ bookmarksRouter
     BookmarksService.getAllBookmarks(db)
       .then(bookmarks => {
         res.status(200).json(bookmarks);
-      });
+      })
+      .catch(next);
   })
   .post((req,res) => {
     const { name, url, rating, description } = req.body;
@@ -66,7 +67,7 @@ bookmarksRouter
 
 bookmarksRouter
   .route('/:id')
-  .get((req,res) => {
+  .get((req,res,next) => {
     const db = req.app.get('db');
     const id = req.params.id;
 
@@ -77,7 +78,8 @@ bookmarksRouter
           return res.status(404).send('Bookmark not found');
         }
         return res.status(200).json(bookmark);
-      });
+      })
+      .catch(next);
   })
   .delete((req,res) => {
     const id = req.params.id;
