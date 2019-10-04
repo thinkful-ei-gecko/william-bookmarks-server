@@ -6,7 +6,7 @@ function validateBearerToken(req,res,next) {
 
   if(!authToken || apiToken !== authToken.split(' ')[1]) {
     logger.error(`Unauthorized request to path: ${req.path}`);
-    return res.status(404).json( {error: 'Unauthorized request' });
+    return res.status(401).json( {error: 'Unauthorized request' });
   }
   next();
 }

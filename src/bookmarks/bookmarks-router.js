@@ -3,6 +3,7 @@ const logger = require('../logger');
 const validUrl = require('valid-url');
 const BookmarksService = require('./bookmarks-service');
 const xss = require('xss');
+const path = require('path');
 
 const bookmarksRouter = express.Router();
 
@@ -64,7 +65,7 @@ bookmarksRouter
     BookmarksService.postBookmark(db,newBookmark)
       .then(bookmark => {
         logger.info(`Bookmark with id ${newBookmark.id} created`);
-        res.status(201).location(`/bookmarks/${bookmark.id}`).json(serializeBookmark(bookmark));
+        res.status(201).location(path.posix.join(req.originalUrl, `/${bookmark.id}`)).json(serializeBookmark(bookmark));
       })
       .catch(next);
   });
@@ -97,6 +98,24 @@ bookmarksRouter
       .then(() => {
         logger.info(`Bookmark with id ${id} deleted`);
         res.status(204).end();
+      })
+      .catch(next);
+  })
+  .patch((req,res,next) => {
+    const { title, url, rating, description } = req.body;
+    const bookmarkToUpdate = { title, url, rating, description };
+    const id = req.params.id;
+
+    const numberOfValues = Object.values(bookmarkToUpdate).filter(Boolean).length;
+    if(numberOfValues === 0) {
+      return res.status(400).json({error: {message: 'Request body must contain title, url, rating, or description'}});
+    }
+
+
+    const db = req.app.get('db');
+    BookmarksService.updateBookmark(db,id,bookmarkToUpdate)
+      .then(numRowsAffected => {
+        return res.status(204).end();
       })
       .catch(next);
   });
